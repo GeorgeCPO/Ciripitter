@@ -119,6 +119,31 @@ Counters live in Redis with a sliding window or token bucket algorithm.
 
 ---
 
+## Application Structure — Modular Monolith
+
+Ciripitter is a **modular monolith**: a single deployable process whose source is divided into self-contained feature modules. Modules communicate through direct TypeScript function calls — never over HTTP. Nothing may reach into another module's internals (routes, DB queries, or service logic).
+
+```
+src/
+  modules/
+    auth/        # register, login, JWT issue/refresh/revoke
+    users/       # profiles, follow/unfollow
+    chirps/      # post, delete, like
+    timelines/   # fan-out, feed assembly
+  shared/        # db client, config, middleware, shared types
+  app.ts         # buildApp() — registers all module routes
+  index.ts       # binds to port
+```
+
+**Module contract:**
+- Each module exports a Fastify plugin (its routes) and a service layer (plain functions).
+- The service layer is what other modules may call — routes are module-private.
+- Each module owns the Drizzle schema for its tables. Cross-module DB joins are a red flag; prefer service calls.
+
+**Why not microservices yet?** The domain is not proven at scale. A modular monolith enforces the same boundary discipline but with far lower operational overhead. The module boundaries make a future extraction straightforward if one domain needs independent scaling.
+
+---
+
 ## Build Order
 1. Core schema: users, chirps, follows, likes
 2. JWT auth (register, login, refresh, revoke)
