@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 
-export function buildApp() {
-  const app = Fastify({ logger: false });
+export function buildApp({ logger = true }: { logger?: boolean } = {}) {
+  const app = Fastify({ logger });
 
   app.get('/', async () => {
     return { message: 'Hello World' };

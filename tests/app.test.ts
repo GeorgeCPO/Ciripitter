@@ -3,7 +3,7 @@ import { buildApp } from '../src/app';
 
 describe('GET /', () => {
   it('returns hello world', async () => {
-    const app = buildApp();
+    const app = buildApp({ logger: false });
 
     const response = await app.inject({
       method: 'GET',
