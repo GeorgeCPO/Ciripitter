@@ -26,6 +26,8 @@ To run a single test file: `npx vitest run tests/some.test.ts`
 
 ## Architecture
 
+Before making any code or design decision, read `docs/architecture.md`. It contains the canonical system diagram (Mermaid) and the agreed decisions on: read/write DB split, caching strategy, fan-out approach, JWT auth, rate limiting, SPOFs, and build order.
+
 `src/index.ts` starts the server. `src/app.ts` exports `buildApp()`, which constructs and returns the Fastify instance without binding to a port — tests import it directly and use `app.inject()`.
 
 ## Environment
